@@ -1,0 +1,71 @@
+.admin-orders-list {
+    display: flex;
+    flex-direction: column;
+    gap: var(--spacing-lg);
+}
+
+.admin-order-card {
+    background: var(--gray-50);
+    border: 1px solid var(--border);
+    border-radius: var(--radius-lg);
+    padding: var(--spacing-lg);
+    transition: all 0.2s ease;
+}
+
+.admin-order-card:hover {
+    box-shadow: var(--shadow-md);
+}
+
+.admin-order-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    margin-bottom: var(--spacing-md);
+    gap: var(--spacing-md);
+}
+
+.admin-order-header h3 {
+    font-size: 1.1rem;
+    color: var(--text-primary);
+    margin-bottom: 0.25rem;
+}
+
+.order-meta {
+    font-size: 0.875rem;
+    color: var(--text-secondary);
+}
+
+.admin-order-details {
+    margin-bottom: var(--spacing-md);
+}
+
+.detail-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+    gap: var(--spacing-md);
+    padding: var(--spacing-md);
+    background: white;
+    border-radius: var(--radius-md);
+}
+
+.detail-grid>div {
+    display: flex;
+    flex-direction: column;
+    gap: 0.25rem;
+}
+
+.detail-label {
+    font-size: 0.875rem;
+    color: var(--text-secondary);
+}
+
+.admin-order-actions {
+    display: flex;
+    gap: var(--spacing-sm);
+    flex-wrap: wrap;
+}
+
+.admin-order-actions .btn {
+    flex: 1;
+    min-width: 150px;
+}

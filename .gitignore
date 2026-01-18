@@ -1,0 +1,77 @@
+# Dependencies
+node_modules/
+backend/node_modules/
+frontend/node_modules/
+
+# Environment variables (IMPORTANT - contains secrets!)
+.env
+.env.local
+.env.production
+backend/.env
+backend/.env.local
+backend/.env.production
+frontend/.env
+frontend/.env.local
+frontend/.env.production
+
+# Documentation files (keep only CREDENTIALS_GUIDE.md)
+PROJECT_STRUCTURE.md
+QUICK_START.md
+README.md
+SETUP.md
+TEST_CREDENTIALS.md
+
+# Logs
+logs
+*.log
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+lerna-debug.log*
+
+# Temporary files
+uploads/
+temp/
+*.tmp
+.DS_Store
+Thumbs.db
+
+# Build outputs
+dist/
+build/
+backend/dist/
+backend/build/
+frontend/build/
+frontend/dist/
+
+# IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+.history/
+
+# OS files
+.DS_Store
+Thumbs.db
+desktop.ini
+
+# Package lock files (optional - uncomment if you want to exclude)
+# package-lock.json
+# backend/package-lock.json
+# frontend/package-lock.json
+
+# Electron
+electron/dist/
+electron/build/
+
+# Testing
+coverage/
+.nyc_output/
+
+# Misc
+.cache/
+*.pid
+*.seed
+*.pid.lock
