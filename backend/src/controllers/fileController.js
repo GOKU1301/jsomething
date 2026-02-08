@@ -1,7 +1,7 @@
 const multer = require('multer');
 const pdfParse = require('pdf-parse');
 const db = require('../config/database');
-const { uploadFile, getSignedUrl } = require('../config/s3');
+const { uploadFile, getSignedUrl, deleteFile } = require('../config/supabaseStorage');
 
 // Configure multer for file upload (memory storage)
 const upload = multer({
@@ -134,7 +134,7 @@ const getDownloadUrl = async (req, res) => {
         const file = result.rows[0];
 
         // Generate signed URL (valid for 1 hour)
-        const downloadUrl = getSignedUrl(file.s3_key, 3600);
+        const downloadUrl = await getSignedUrl(file.s3_key, 3600);
 
         res.json({
             downloadUrl,
@@ -147,9 +147,12 @@ const getDownloadUrl = async (req, res) => {
     }
 };
 
+
+
 module.exports = {
     upload,
     uploadDocument,
     getFileMetadata,
+    getDownloadUrl,
     getDownloadUrl
 };

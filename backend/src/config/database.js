@@ -1,5 +1,9 @@
 const { Pool } = require('pg');
+const dns = require('dns');
 require('dotenv').config();
+
+// Prefer IPv4 over IPv6 to avoid connectivity issues
+dns.setDefaultResultOrder('ipv4first');
 
 const pool = new Pool({
   host: process.env.DB_HOST,
@@ -12,7 +16,9 @@ const pool = new Pool({
   },
   max: 20, // Maximum number of clients in the pool
   idleTimeoutMillis: 30000,
-  connectionTimeoutMillis: 2000,
+  connectionTimeoutMillis: 10000, // Increased to 10 seconds
+  keepAlive: true,
+  keepAliveInitialDelayMillis: 10000,
 });
 
 // Test connection
