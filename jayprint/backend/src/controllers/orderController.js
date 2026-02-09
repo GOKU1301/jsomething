@@ -114,7 +114,18 @@ const getOrders = async (req, res) => {
         if (isAdmin) {
             // Admin sees all orders, optionally filtered by status
             if (status) {
-                query = `
+                if (status === 'PENDING') {
+                    query = `
+          SELECT o.*, f.original_filename, f.page_count, u.name as user_name, u.email as user_email, u.roll_number
+          FROM print_orders o
+          JOIN files f ON o.file_id = f.id
+          JOIN users u ON o.user_id = u.id
+          WHERE o.status IN ('UPLOADED', 'PAYMENT_PENDING', 'PAID', 'QUEUED')
+          ORDER BY o.created_at ASC
+        `;
+                    params = [];
+                } else {
+                    query = `
           SELECT o.*, f.original_filename, f.page_count, u.name as user_name, u.email as user_email, u.roll_number
           FROM print_orders o
           JOIN files f ON o.file_id = f.id
@@ -122,7 +133,8 @@ const getOrders = async (req, res) => {
           WHERE o.status = $1
           ORDER BY o.created_at ASC
         `;
-                params = [status];
+                    params = [status];
+                }
             } else {
                 query = `
           SELECT o.*, f.original_filename, f.page_count, u.name as user_name, u.email as user_email, u.roll_number
@@ -362,11 +374,93 @@ const getOrderHistory = async (req, res) => {
     }
 };
 
+/**
+ * Delete an order (admin only)
+ * Will also delete the associated file from S3 if no other orders use it
+ */
+const deleteOrder = async (req, res) => {
+    const client = await db.pool.connect();
+
+    try {
+        const orderId = req.params.id;
+
+        await client.query('BEGIN');
+
+        // 1. Get order details to check status and get file_id
+        const orderResult = await client.query(
+            'SELECT file_id, status FROM print_orders WHERE id = $1',
+            [orderId]
+        );
+
+        if (orderResult.rows.length === 0) {
+            await client.query('ROLLBACK');
+            return res.status(404).json({ error: 'Order not found' });
+        }
+
+        const { file_id: fileId, status } = orderResult.rows[0];
+
+        // Security check: Only allow deleting COLLECTED or CANCELLED orders
+        if (status !== 'COLLECTED' && status !== 'CANCELLED') {
+            await client.query('ROLLBACK');
+            return res.status(400).json({ error: 'Only collected or cancelled orders can be removed from the system' });
+        }
+
+        // 2. Delete status history
+        await client.query('DELETE FROM order_status_history WHERE order_id = $1', [orderId]);
+
+        // 3. Delete order
+        await client.query('DELETE FROM print_orders WHERE id = $1', [orderId]);
+
+        // 4. Check if any other orders still use this file
+        const otherOrdersResult = await client.query(
+            'SELECT id FROM print_orders WHERE file_id = $1',
+            [fileId]
+        );
+
+        let fileDeleted = false;
+        if (otherOrdersResult.rows.length === 0) {
+            // No other orders use this file, clean up storage and file record
+            const fileResult = await client.query('SELECT s3_key FROM files WHERE id = $1', [fileId]);
+
+            if (fileResult.rows.length > 0) {
+                const s3Key = fileResult.rows[0].s3_key;
+
+                // Delete from Supabase Storage
+                try {
+                    const { deleteFile } = require('../config/supabaseStorage');
+                    await deleteFile(s3Key);
+                    fileDeleted = true;
+                } catch (storageError) {
+                    console.error('Storage deletion error (non-fatal):', storageError);
+                    // We continue even if storage deletion fails to keep DB clean
+                }
+
+                // Delete from database files table
+                await client.query('DELETE FROM files WHERE id = $1', [fileId]);
+            }
+        }
+
+        await client.query('COMMIT');
+
+        res.json({
+            message: 'Order removed successfully',
+            fileCleanup: fileDeleted ? 'Associated file was also deleted from storage' : 'File kept (other orders still reference it)'
+        });
+    } catch (error) {
+        await client.query('ROLLBACK');
+        console.error('Delete order error:', error);
+        res.status(500).json({ error: 'Failed to remove order' });
+    } finally {
+        client.release();
+    }
+};
+
 module.exports = {
     createOrder,
     getOrders,
     getOrderById,
     updateOrderStatus,
     getOrderHistory,
+    deleteOrder,
     calculateAmount
 };

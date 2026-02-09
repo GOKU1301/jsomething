@@ -3,8 +3,10 @@ import { useNavigate, Link } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
 import './Login.css';
 
-const Login = () => {
+const Login = ({ mode = 'student' }) => {
     const [isLogin, setIsLogin] = useState(true);
+    const isAdminMode = mode === 'admin';
+
     const [formData, setFormData] = useState({
         name: '',
         email: '',
@@ -59,24 +61,26 @@ const Login = () => {
         <div className="login-container">
             <div className="login-card">
                 <div className="login-header">
-                    <h1>🖨️ JayPrint</h1>
-                    <p>Queue-Free Printing for Students</p>
+                    <h1>{isAdminMode ? '🛡️ Admin Login' : '🖨️ JayPrint'}</h1>
+                    <p>{isAdminMode ? 'Administrator Access' : 'Queue-Free Printing for Students'}</p>
                 </div>
 
-                <div className="login-tabs">
-                    <button
-                        className={`tab ${isLogin ? 'active' : ''}`}
-                        onClick={() => setIsLogin(true)}
-                    >
-                        Login
-                    </button>
-                    <button
-                        className={`tab ${!isLogin ? 'active' : ''}`}
-                        onClick={() => setIsLogin(false)}
-                    >
-                        Register
-                    </button>
-                </div>
+                {!isAdminMode && (
+                    <div className="login-tabs">
+                        <button
+                            className={`tab ${isLogin ? 'active' : ''}`}
+                            onClick={() => setIsLogin(true)}
+                        >
+                            Login
+                        </button>
+                        <button
+                            className={`tab ${!isLogin ? 'active' : ''}`}
+                            onClick={() => setIsLogin(false)}
+                        >
+                            Register
+                        </button>
+                    </div>
+                )}
 
                 {error && <div className="alert alert-error">{error}</div>}
 
@@ -147,17 +151,19 @@ const Login = () => {
                     </button>
                 </form>
 
-                <div className="login-footer">
-                    <p>
-                        {isLogin ? "Don't have an account? " : 'Already have an account? '}
-                        <button
-                            className="link-button"
-                            onClick={() => setIsLogin(!isLogin)}
-                        >
-                            {isLogin ? 'Register' : 'Login'}
-                        </button>
-                    </p>
-                </div>
+                {!isAdminMode && (
+                    <div className="login-footer">
+                        <p>
+                            {isLogin ? "Don't have an account? " : 'Already have an account? '}
+                            <button
+                                className="link-button"
+                                onClick={() => setIsLogin(!isLogin)}
+                            >
+                                {isLogin ? 'Register' : 'Login'}
+                            </button>
+                        </p>
+                    </div>
+                )}
             </div>
         </div>
     );

@@ -32,7 +32,7 @@ api.interceptors.response.use(
             // Token expired, invalid, or forbidden
             localStorage.removeItem('token');
             localStorage.removeItem('user');
-            window.location.href = '/login';
+            window.location.href = '/';
         }
         return Promise.reject(error);
     }
@@ -64,6 +64,7 @@ export const ordersAPI = {
     getAll: (status) => api.get('/orders', { params: { status } }),
     getById: (id) => api.get(`/orders/${id}`),
     updateStatus: (id, status) => api.patch(`/orders/${id}/status`, { status }),
+    delete: (id) => api.delete(`/orders/${id}`),
     getHistory: (id) => api.get(`/orders/${id}/history`)
 };
 

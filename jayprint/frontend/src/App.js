@@ -1,6 +1,7 @@
 import React from 'react';
 import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-dom';
 import { AuthProvider, useAuth } from './context/AuthContext';
+import LandingPage from './pages/LandingPage';
 import Login from './pages/Login';
 import StudentDashboard from './pages/StudentDashboard';
 import AdminDashboard from './pages/AdminDashboard';
@@ -20,7 +21,7 @@ const ProtectedRoute = ({ children, adminOnly = false }) => {
   }
 
   if (!isAuthenticated) {
-    return <Navigate to="/login" replace />;
+    return <Navigate to="/" replace />;
   }
 
   if (adminOnly && !isAdmin) {
@@ -36,12 +37,23 @@ function AppRoutes() {
   return (
     <Routes>
       <Route
-        path="/login"
+        path="/login/student"
         element={
           isAuthenticated ? (
             <Navigate to={isAdmin ? '/admin' : '/dashboard'} replace />
           ) : (
-            <Login />
+            <Login mode="student" />
+          )
+        }
+      />
+
+      <Route
+        path="/login/admin"
+        element={
+          isAuthenticated ? (
+            <Navigate to={isAdmin ? '/admin' : '/dashboard'} replace />
+          ) : (
+            <Login mode="admin" />
           )
         }
       />
@@ -79,10 +91,13 @@ function AppRoutes() {
           isAuthenticated ? (
             <Navigate to={isAdmin ? '/admin' : '/dashboard'} replace />
           ) : (
-            <Navigate to="/login" replace />
+            <LandingPage />
           )
         }
       />
+
+      {/* Redirect legacy /login to /login/student if accessed directly */}
+      <Route path="/login" element={<Navigate to="/login/student" replace />} />
 
       <Route path="*" element={<Navigate to="/" replace />} />
     </Routes>

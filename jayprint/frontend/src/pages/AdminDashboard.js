@@ -17,7 +17,7 @@ const STATUS_LABELS = {
 
 const AdminDashboard = () => {
     const [orders, setOrders] = useState([]);
-    const [filter, setFilter] = useState('QUEUED');
+    const [filter, setFilter] = useState('PENDING');
     const [loading, setLoading] = useState(true);
     const [notification, setNotification] = useState(null);
     const { user, logout } = useAuth();
@@ -88,9 +88,61 @@ const AdminDashboard = () => {
         }
     };
 
+    const handleDelete = async (orderId) => {
+        if (!window.confirm('Are you sure you want to permanently remove this order and its file? This will save storage space.')) {
+            return;
+        }
+
+        try {
+            await ordersAPI.delete(orderId);
+            fetchOrders();
+            setNotification({
+                type: 'success',
+                message: 'Order and associated file removed successfully'
+            });
+            setTimeout(() => setNotification(null), 3000);
+        } catch (error) {
+            setNotification({
+                type: 'error',
+                message: error.response?.data?.error || 'Failed to remove order'
+            });
+            setTimeout(() => setNotification(null), 3000);
+        }
+    };
+
+    const handleClearCollected = async () => {
+        const collectedOrders = orders.filter(o => o.status === 'COLLECTED');
+        if (collectedOrders.length === 0) return;
+
+        if (!window.confirm(`Are you sure you want to remove all ${collectedOrders.length} collected orders?`)) {
+            return;
+        }
+
+        setLoading(true);
+        let successCount = 0;
+        let failCount = 0;
+
+        for (const order of collectedOrders) {
+            try {
+                await ordersAPI.delete(order.id);
+                successCount++;
+            } catch (error) {
+                failCount++;
+            }
+        }
+
+        fetchOrders();
+        setNotification({
+            type: successCount > 0 ? 'success' : 'error',
+            message: `Cleaned up ${successCount} orders.${failCount > 0 ? ` Failed to remove ${failCount} orders.` : ''}`
+        });
+        setTimeout(() => setNotification(null), 5000);
+        setLoading(false);
+    };
+
     const handleLogout = () => {
         logout();
-        navigate('/login');
+        navigate('/');
     };
 
     if (loading) {
@@ -130,22 +182,29 @@ const AdminDashboard = () => {
                 <div className="card">
                     <div className="flex justify-between items-center mb-4">
                         <h2>Print Queue</h2>
-                        <select
-                            className="input"
-                            style={{ width: 'auto' }}
-                            value={filter}
-                            onChange={(e) => setFilter(e.target.value)}
-                        >
-                            <option value="">All Orders</option>
-                            <option value="QUEUED">Queued</option>
-                            <option value="PRINTED">Printed</option>
-                            <option value="COLLECTED">Collected</option>
-                        </select>
+                        <div className="flex items-center gap-2">
+                            {filter === 'COLLECTED' && orders.length > 0 && (
+                                <button className="btn btn-danger" onClick={handleClearCollected}>
+                                    🧹 Clean Up All
+                                </button>
+                            )}
+                            <select
+                                className="input"
+                                style={{ width: 'auto' }}
+                                value={filter}
+                                onChange={(e) => setFilter(e.target.value)}
+                            >
+                                <option value="">All Orders</option>
+                                <option value="PENDING">Pending (To Print)</option>
+                                <option value="PRINTED">Printed</option>
+                                <option value="COLLECTED">Collected</option>
+                            </select>
+                        </div>
                     </div>
 
                     {orders.length === 0 ? (
                         <div className="empty-state">
-                            <p>No orders in {filter ? STATUS_LABELS[filter] : 'the system'}</p>
+                            <p>No orders in {filter === 'PENDING' ? 'Pending Queue' : (filter ? STATUS_LABELS[filter] : 'the system')}</p>
                         </div>
                     ) : (
                         <div className="admin-orders-list">
@@ -201,7 +260,7 @@ const AdminDashboard = () => {
                                             📥 Download
                                         </button>
 
-                                        {order.status === 'QUEUED' && (
+                                        {['UPLOADED', 'PAYMENT_PENDING', 'PAID', 'QUEUED'].includes(order.status) && (
                                             <button
                                                 className="btn btn-success"
                                                 onClick={() => handleStatusUpdate(order.id, 'PRINTED')}
@@ -216,6 +275,14 @@ const AdminDashboard = () => {
                                                 onClick={() => handleStatusUpdate(order.id, 'COLLECTED')}
                                             >
                                                 ✅ Mark as Collected
+                                            </button>
+                                        )}
+                                        {order.status === 'COLLECTED' && (
+                                            <button
+                                                className="btn btn-danger"
+                                                onClick={() => handleDelete(order.id)}
+                                            >
+                                                🗑️ Delete
                                             </button>
                                         )}
                                     </div>

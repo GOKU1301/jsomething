@@ -86,7 +86,7 @@ const StudentDashboard = () => {
 
     const handleLogout = () => {
         logout();
-        navigate('/login');
+        navigate('/');
     };
 
     if (loading) {

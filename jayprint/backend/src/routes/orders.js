@@ -18,6 +18,9 @@ router.get('/:id', orderController.getOrderById);
 // Update order status (admin only)
 router.patch('/:id/status', requireAdmin, orderController.updateOrderStatus);
 
+// Delete order (admin only)
+router.delete('/:id', requireAdmin, orderController.deleteOrder);
+
 // Get order history
 router.get('/:id/history', orderController.getOrderHistory);
 
