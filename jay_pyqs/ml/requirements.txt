@@ -1,0 +1,17 @@
+flask
+pandas
+scikit-learn
+numpy
+boto3
+openai
+python-dotenv
+# PDF Processing
+pypdf
+pdfplumber
+# NLP & Similarity
+sentence-transformers
+torch
+# HTTP Server (to talk to Spring Boot)
+flask-cors
+requests
+

@@ -1,0 +1,7 @@
+As a main project,i'm planning to build a pyq management system for jiit.
+1.)There will be two dashboards,one for teachers(to upload pyqs) and one for students(to download pyqs).
+2.)There will be a chatbot integrated with OpenApi or Gemini for students to ask questions.
+3.)All the data related to pyqs will be stored on amazon S3.
+4.)For the same subject,using ML i wanna predict what probably will be asked in the upcoming exams based on series of pyqs and what has been the most repeated question so far.
+5.)Our college has 3 exam types(T1,T2,T3) in a semester.The probable file structure of storing these in S3 will be coursecode/year/examtype(t1,t2,t3)/filename.pdf. Eg:15B11CI312/2023/T2/maths.pdf.
+6.)Spring Boot for backend,React for frontend,S3 for file storage,and you may choose any cloud database of your choice

@@ -58,3 +58,15 @@ coverage/
 
 # Specific Project Files Ignored
 TEST_CREDENTIALS.md
+
+# Jay Pyqs
+jay_pyqs/backend/target/
+jay_pyqs/backend/.mvn/
+jay_pyqs/backend/mvnw
+jay_pyqs/backend/mvnw.cmd
+jay_pyqs/backend/startup_log.txt
+jay_pyqs/backend/deptree.txt
+jay_pyqs/frontend/build/
+jay_pyqs/frontend/node_modules/
+jay_pyqs/ml/__pycache__/
+jay_pyqs/ml/.venv/
