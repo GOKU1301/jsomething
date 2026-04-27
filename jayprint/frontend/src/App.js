@@ -1,7 +1,8 @@
 import React from 'react';
 import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-dom';
 import { AuthProvider, useAuth } from './context/AuthContext';
-import LandingPage from './pages/LandingPage';
+import HubPage from './pages/HubPage';
+import LandingPage from './pages/LandingPage'; // role-selector, reached from hub via /login/student
 import Login from './pages/Login';
 import StudentDashboard from './pages/StudentDashboard';
 import AdminDashboard from './pages/AdminDashboard';
@@ -85,21 +86,28 @@ function AppRoutes() {
         }
       />
 
+      {/* Unified hub — entry point when unauthenticated */}
+      <Route
+        path="/hub"
+        element={isAuthenticated ? <Navigate to={isAdmin ? '/admin' : '/dashboard'} replace /> : <HubPage />}
+      />
+
+      {/* JayPrint role selector — reached from hub */}
+      <Route
+        path="/select-role"
+        element={isAuthenticated ? <Navigate to={isAdmin ? '/admin' : '/dashboard'} replace /> : <LandingPage />}
+      />
+
+      {/* Root redirects to hub or dashboard */}
       <Route
         path="/"
-        element={
-          isAuthenticated ? (
-            <Navigate to={isAdmin ? '/admin' : '/dashboard'} replace />
-          ) : (
-            <LandingPage />
-          )
-        }
+        element={isAuthenticated ? <Navigate to={isAdmin ? '/admin' : '/dashboard'} replace /> : <Navigate to="/hub" replace />}
       />
 
       {/* Redirect legacy /login to /login/student if accessed directly */}
       <Route path="/login" element={<Navigate to="/login/student" replace />} />
 
-      <Route path="*" element={<Navigate to="/" replace />} />
+      <Route path="*" element={<Navigate to="/hub" replace />} />
     </Routes>
   );
 }

@@ -8,6 +8,7 @@ jayprint/frontend/node_modules/
 jayprint/.env
 jayprint/backend/.env
 jayprint/frontend/.env
+jay_pyqs/backend/.env
 
 # Logs
 logs
@@ -70,3 +71,5 @@ jay_pyqs/frontend/build/
 jay_pyqs/frontend/node_modules/
 jay_pyqs/ml/__pycache__/
 jay_pyqs/ml/.venv/
+exam_predictor/__pycache__/
+exam_predictor/.venv/

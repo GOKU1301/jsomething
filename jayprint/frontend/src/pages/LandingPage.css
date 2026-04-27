@@ -16,6 +16,7 @@
     max-width: 500px;
     text-align: center;
     backdrop-filter: blur(10px);
+    position: relative;
 }
 
 .landing-header {

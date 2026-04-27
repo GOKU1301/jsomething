@@ -1,0 +1,308 @@
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap');
+
+/* ── Hub Page ─────────────────────────────────────────────────── */
+.hub-root {
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    background: #0a0a14;
+    font-family: 'Inter', sans-serif;
+    position: relative;
+    overflow: hidden;
+    padding: 2rem;
+}
+
+/* Animated background blobs */
+.hub-root::before {
+    content: '';
+    position: absolute;
+    top: -20%;
+    left: -15%;
+    width: 60vmax;
+    height: 60vmax;
+    background: radial-gradient(circle, rgba(99,102,241,0.18) 0%, transparent 70%);
+    animation: blobDrift1 14s ease-in-out infinite alternate;
+}
+
+.hub-root::after {
+    content: '';
+    position: absolute;
+    bottom: -20%;
+    right: -15%;
+    width: 55vmax;
+    height: 55vmax;
+    background: radial-gradient(circle, rgba(139,92,246,0.15) 0%, transparent 70%);
+    animation: blobDrift2 18s ease-in-out infinite alternate;
+}
+
+@keyframes blobDrift1 {
+    0%   { transform: translate(0, 0) scale(1); }
+    100% { transform: translate(5%, 8%) scale(1.08); }
+}
+@keyframes blobDrift2 {
+    0%   { transform: translate(0, 0) scale(1); }
+    100% { transform: translate(-6%, -5%) scale(1.06); }
+}
+
+/* ── Header ─────────────────────────────────────────────────────── */
+.hub-header {
+    text-align: center;
+    margin-bottom: 3.5rem;
+    position: relative;
+    z-index: 1;
+}
+
+.hub-logo-row {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.75rem;
+    margin-bottom: 1rem;
+}
+
+.hub-logo-badge {
+    width: 52px;
+    height: 52px;
+    border-radius: 14px;
+    background: linear-gradient(135deg, #6366f1, #8b5cf6);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.6rem;
+    box-shadow: 0 0 32px rgba(99,102,241,0.45);
+}
+
+.hub-logo-text {
+    font-size: 1.9rem;
+    font-weight: 800;
+    background: linear-gradient(135deg, #a5b4fc, #c4b5fd);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+    letter-spacing: -0.04em;
+}
+
+.hub-tagline {
+    font-size: 1rem;
+    color: rgba(255,255,255,0.45);
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    font-weight: 500;
+}
+
+/* ── Grid ─────────────────────────────────────────────────────── */
+.hub-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+    gap: 1.75rem;
+    width: 100%;
+    max-width: 740px;
+    position: relative;
+    z-index: 1;
+}
+
+/* ── App Card ────────────────────────────────────────────────── */
+.hub-app-card {
+    background: rgba(255,255,255,0.04);
+    border: 1px solid rgba(255,255,255,0.09);
+    border-radius: 24px;
+    padding: 2.5rem 2rem;
+    cursor: pointer;
+    text-decoration: none;
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 1.25rem;
+    backdrop-filter: blur(18px);
+    -webkit-backdrop-filter: blur(18px);
+    transition: transform 0.28s cubic-bezier(0.34, 1.56, 0.64, 1),
+                box-shadow 0.28s ease,
+                border-color 0.28s ease,
+                background 0.28s ease;
+    position: relative;
+    overflow: hidden;
+}
+
+.hub-app-card::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    border-radius: 24px;
+    opacity: 0;
+    transition: opacity 0.3s ease;
+}
+
+.hub-app-card:hover {
+    transform: translateY(-8px) scale(1.02);
+    background: rgba(255,255,255,0.07);
+}
+
+/* ── JayPrint card accent ───────────────── */
+.hub-app-card.jayprint-card {
+    border-color: rgba(99,102,241,0.25);
+}
+
+.hub-app-card.jayprint-card:hover {
+    border-color: rgba(99,102,241,0.6);
+    box-shadow: 0 24px 60px rgba(99,102,241,0.22), 0 0 0 1px rgba(99,102,241,0.3);
+}
+
+.hub-app-card.jayprint-card::before {
+    background: linear-gradient(135deg, rgba(99,102,241,0.08), transparent);
+}
+
+.hub-app-card.jayprint-card:hover::before {
+    opacity: 1;
+}
+
+/* ── JayPyQs card accent ────────────────── */
+.hub-app-card.jaypyqs-card {
+    border-color: rgba(16,185,129,0.25);
+}
+
+.hub-app-card.jaypyqs-card:hover {
+    border-color: rgba(16,185,129,0.6);
+    box-shadow: 0 24px 60px rgba(16,185,129,0.18), 0 0 0 1px rgba(16,185,129,0.3);
+}
+
+.hub-app-card.jaypyqs-card::before {
+    background: linear-gradient(135deg, rgba(16,185,129,0.08), transparent);
+}
+
+.hub-app-card.jaypyqs-card:hover::before {
+    opacity: 1;
+}
+
+/* ── Card Icon ───────────────────────────── */
+.hub-card-icon {
+    width: 64px;
+    height: 64px;
+    border-radius: 18px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 2rem;
+    position: relative;
+    z-index: 1;
+}
+
+.jayprint-card .hub-card-icon {
+    background: linear-gradient(135deg, rgba(99,102,241,0.25), rgba(139,92,246,0.18));
+    box-shadow: 0 0 24px rgba(99,102,241,0.3);
+}
+
+.jaypyqs-card .hub-card-icon {
+    background: linear-gradient(135deg, rgba(16,185,129,0.22), rgba(5,150,105,0.15));
+    box-shadow: 0 0 24px rgba(16,185,129,0.28);
+}
+
+/* ── Card Text ───────────────────────────── */
+.hub-card-body {
+    position: relative;
+    z-index: 1;
+}
+
+.hub-card-title {
+    font-size: 1.4rem;
+    font-weight: 700;
+    color: #e8eaf6;
+    margin: 0 0 0.4rem;
+    letter-spacing: -0.02em;
+}
+
+.hub-card-desc {
+    font-size: 0.92rem;
+    color: rgba(255,255,255,0.48);
+    line-height: 1.55;
+    margin: 0;
+}
+
+/* ── Feature pills ───────────────────────── */
+.hub-card-pills {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.45rem;
+    position: relative;
+    z-index: 1;
+}
+
+.hub-pill {
+    font-size: 0.75rem;
+    font-weight: 500;
+    padding: 0.25rem 0.65rem;
+    border-radius: 999px;
+    letter-spacing: 0.02em;
+}
+
+.jayprint-card .hub-pill {
+    background: rgba(99,102,241,0.15);
+    color: #a5b4fc;
+    border: 1px solid rgba(99,102,241,0.25);
+}
+
+.jaypyqs-card .hub-pill {
+    background: rgba(16,185,129,0.12);
+    color: #6ee7b7;
+    border: 1px solid rgba(16,185,129,0.22);
+}
+
+/* ── Arrow ───────────────────────────────── */
+.hub-card-arrow {
+    margin-left: auto;
+    position: relative;
+    z-index: 1;
+    opacity: 0.35;
+    font-size: 1.3rem;
+    align-self: flex-end;
+    transition: opacity 0.2s, transform 0.2s;
+}
+
+.hub-app-card:hover .hub-card-arrow {
+    opacity: 0.9;
+    transform: translateX(5px);
+}
+
+/* ── Status pill ─────────────────────────── */
+.hub-status {
+    font-size: 0.7rem;
+    font-weight: 600;
+    padding: 0.18rem 0.6rem;
+    border-radius: 999px;
+    background: rgba(16,185,129,0.15);
+    color: #6ee7b7;
+    border: 1px solid rgba(16,185,129,0.3);
+    display: flex;
+    align-items: center;
+    gap: 0.3rem;
+    align-self: flex-end;
+    margin-left: auto;
+    position: relative;
+    z-index: 1;
+}
+
+.hub-status::before {
+    content: '';
+    width: 6px;
+    height: 6px;
+    border-radius: 50%;
+    background: #10b981;
+    animation: pulse-dot 2s ease-in-out infinite;
+}
+
+@keyframes pulse-dot {
+    0%, 100% { opacity: 1; transform: scale(1); }
+    50%       { opacity: 0.5; transform: scale(0.75); }
+}
+
+/* ── Footer note ─────────────────────────── */
+.hub-footer {
+    margin-top: 2.5rem;
+    font-size: 0.8rem;
+    color: rgba(255,255,255,0.2);
+    text-align: center;
+    letter-spacing: 0.02em;
+    position: relative;
+    z-index: 1;
+}

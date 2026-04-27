@@ -23,6 +23,7 @@ function App() {
                         <span style={{ fontWeight: '700', fontSize: '1.25rem', letterSpacing: '-0.025em' }}>JAY_PYQS</span>
                     </div>
                     <div className="nav-links">
+                        <a href="http://localhost:3000/hub" style={{ marginLeft: 0, marginRight: '2rem', color: 'var(--primary)', fontWeight: '700' }}>← HUB</a>
                         <NavLink to="/" end className={({ isActive }) => isActive ? 'active' : ''}>Student Portal</NavLink>
                         <NavLink to="/teacher" className={({ isActive }) => isActive ? 'active' : ''}>Teacher Portal</NavLink>
                     </div>

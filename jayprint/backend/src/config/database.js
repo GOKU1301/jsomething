@@ -22,8 +22,23 @@ const pool = new Pool({
 });
 
 // Test connection
+console.log(`🔌 Attempting to connect to database at: ${process.env.DB_HOST}`);
+
 pool.on('connect', () => {
   console.log('✅ Connected to Supabase PostgreSQL database');
+});
+
+// Run a test query
+pool.query('SELECT NOW()', (err, res) => {
+  if (err) {
+    if (err.code === 'ENOTFOUND') {
+      console.error('❌ DNS Error: Could not resolve Supabase host. Your internet or DNS provider might be blocking it.');
+    } else {
+      console.error('❌ Database connection test failed:', err.message);
+    }
+  } else {
+    console.log('⏱️ Database time check:', res.rows[0].now);
+  }
 });
 
 pool.on('error', (err) => {
