@@ -92,13 +92,13 @@
     font-weight: 500;
 }
 
-/* ── Grid ─────────────────────────────────────────────────────── */
+/* ── Grid ──────────────────────────────────────────────────────── */
 .hub-grid {
     display: grid;
     grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
     gap: 1.75rem;
     width: 100%;
-    max-width: 740px;
+    max-width: 1080px;
     position: relative;
     z-index: 1;
 }
@@ -157,7 +157,7 @@
     opacity: 1;
 }
 
-/* ── JayPyQs card accent ────────────────── */
+/* ── JayPyQs card accent ────────────────────────────────────── */
 .hub-app-card.jaypyqs-card {
     border-color: rgba(16,185,129,0.25);
 }
@@ -172,6 +172,24 @@
 }
 
 .hub-app-card.jaypyqs-card:hover::before {
+    opacity: 1;
+}
+
+/* ── JayPredictor card accent ─────────────────────────────── */
+.hub-app-card.jaypredictor-card {
+    border-color: rgba(139,92,246,0.25);
+}
+
+.hub-app-card.jaypredictor-card:hover {
+    border-color: rgba(139,92,246,0.6);
+    box-shadow: 0 24px 60px rgba(139,92,246,0.22), 0 0 0 1px rgba(139,92,246,0.3);
+}
+
+.hub-app-card.jaypredictor-card::before {
+    background: linear-gradient(135deg, rgba(139,92,246,0.1), rgba(236,72,153,0.06), transparent);
+}
+
+.hub-app-card.jaypredictor-card:hover::before {
     opacity: 1;
 }
 
@@ -196,6 +214,11 @@
 .jaypyqs-card .hub-card-icon {
     background: linear-gradient(135deg, rgba(16,185,129,0.22), rgba(5,150,105,0.15));
     box-shadow: 0 0 24px rgba(16,185,129,0.28);
+}
+
+.jaypredictor-card .hub-card-icon {
+    background: linear-gradient(135deg, rgba(139,92,246,0.28), rgba(236,72,153,0.18));
+    box-shadow: 0 0 24px rgba(139,92,246,0.35);
 }
 
 /* ── Card Text ───────────────────────────── */
@@ -246,6 +269,12 @@
     background: rgba(16,185,129,0.12);
     color: #6ee7b7;
     border: 1px solid rgba(16,185,129,0.22);
+}
+
+.jaypredictor-card .hub-pill {
+    background: rgba(139,92,246,0.15);
+    color: #c4b5fd;
+    border: 1px solid rgba(139,92,246,0.25);
 }
 
 /* ── Arrow ───────────────────────────────── */

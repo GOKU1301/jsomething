@@ -6,14 +6,26 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
+import java.net.URI;
+import java.net.http.HttpClient;
+import java.net.http.HttpRequest;
+import java.net.http.HttpResponse;
 import java.util.List;
 import java.util.Optional;
+import java.util.concurrent.CompletableFuture;
+import java.util.logging.Logger;
 
 @Service
 public class PYQService {
 
+    private static final Logger log = Logger.getLogger(PYQService.class.getName());
+    private static final String PREDICTOR_URL = "http://localhost:3002/process-document";
+
     private final PYQRepository pyqRepository;
     private final S3Service s3Service;
+    private final HttpClient httpClient = HttpClient.newBuilder()
+            .version(HttpClient.Version.HTTP_1_1)
+            .build();
 
     public PYQService(PYQRepository pyqRepository, S3Service s3Service) {
         this.pyqRepository = pyqRepository;
@@ -42,7 +54,47 @@ public class PYQService {
                 .solutionS3Key(solutionKey)
                 .build();
 
-        return pyqRepository.save(pyq);
+        PYQ saved = pyqRepository.save(pyq);
+
+        // ── Fire-and-forget webhook to JayPredictor ──────────────────────────────
+        if (saved.getQuestionPaperS3Key() != null) {
+            notifyPredictor(saved);
+        }
+
+        return saved;
+    }
+
+    /**
+     * Sends a non-blocking POST to JayPredictor.
+     * If the Python service is offline, the exception is caught and logged —
+     * the PYQ upload always succeeds regardless.
+     */
+    private void notifyPredictor(PYQ pyq) {
+        CompletableFuture.runAsync(() -> {
+            try {
+                String body = String.format(
+                        "{\"pyq_id\":%d,\"s3_key\":\"%s\",\"subject_code\":\"%s\",\"year\":%d,\"exam_type\":\"%s\"}",
+                        pyq.getId(),
+                        pyq.getQuestionPaperS3Key(),
+                        pyq.getSubjectCode(),
+                        pyq.getYear(),
+                        pyq.getExamType());
+
+                HttpRequest request = HttpRequest.newBuilder()
+                        .uri(URI.create(PREDICTOR_URL))
+                        .version(HttpClient.Version.HTTP_1_1)
+                        .header("Content-Type", "application/json")
+                        .header("Connection", "close")
+                        .POST(HttpRequest.BodyPublishers.ofString(body))
+                        .build();
+
+                HttpResponse<String> response = httpClient.send(
+                        request, HttpResponse.BodyHandlers.ofString());
+                log.info("JayPredictor notified for PYQ " + pyq.getId() + ". Status: " + response.statusCode());
+            } catch (Exception e) {
+                log.warning("JayPredictor notification failed (non-fatal): " + e.getMessage());
+            }
+        });
     }
 
     public List<PYQ> searchPYQsRange(String subjectCode, Integer yearFrom, Integer yearTo,

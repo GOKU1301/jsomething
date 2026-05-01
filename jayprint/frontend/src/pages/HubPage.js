@@ -1,7 +1,8 @@
 import React from 'react';
 import './HubPage.css';
 
-const JAYPYQS_URL = 'http://localhost:3001';  // JayPyQs frontend
+const JAYPYQS_URL     = 'http://localhost:3001';
+const JAYPREDICTOR_URL = 'http://localhost:3003';
 
 const HubPage = () => {
     return (
@@ -61,6 +62,30 @@ const HubPage = () => {
                         <span className="hub-pill">PYQ Browser</span>
                         <span className="hub-pill">Upload</span>
                         <span className="hub-pill">Teacher Panel</span>
+                    </div>
+                    <span className="hub-status">Live</span>
+                    <span className="hub-card-arrow">→</span>
+                </a>
+
+                {/* ── JayPredictor Card ── */}
+                <a
+                    id="hub-jaypredictor-btn"
+                    className="hub-app-card jaypredictor-card"
+                    href={JAYPREDICTOR_URL}
+                    rel="noopener noreferrer"
+                    title="Open JayPredictor"
+                >
+                    <div className="hub-card-icon">🔮</div>
+                    <div className="hub-card-body">
+                        <h2 className="hub-card-title">JayPredictor</h2>
+                        <p className="hub-card-desc">
+                            AI-powered exam topic predictor — analyses PYQ history and ranks the topics most likely to appear next.
+                        </p>
+                    </div>
+                    <div className="hub-card-pills">
+                        <span className="hub-pill">Heatmap</span>
+                        <span className="hub-pill">Confidence Score</span>
+                        <span className="hub-pill">Topic Trends</span>
                     </div>
                     <span className="hub-status">Live</span>
                     <span className="hub-card-arrow">→</span>
